@@ -14,7 +14,13 @@ var express = require('express'),
     mongo = require("mongodb"),
     mongoose = require("mongoose"),
     expressValidator = require("express-validator"),
-    db = mongoose.connection;
+    db = mongoose.connection,
+    config = require("./config/config");
+
+mongoose.connect(config.database, function (err) {
+    if (err) throw err;
+    console.log("conected to DB");
+});
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -26,10 +32,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 
-
 /* handle file upload */
-app.use(multer({dest: __dirname + 'uploads/'}).any());
-// uncomment after placing your favicon in /public
+app.use(multer({dest: __dirname + '/uploads/'}).any());
+
+/* favicon.ico Path */
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico.png')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -90,10 +96,9 @@ app.use(function (err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
-
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.render('error', {errors: err});
 });
 /* Server */
 app.listen(3000, function () {
