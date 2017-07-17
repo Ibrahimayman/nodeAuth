@@ -13,7 +13,8 @@ router.get('/', function (req, res, next) {
 
 router.get('/register', function (req, res, next) {
     res.render('register', {
-        title: "register new user"
+        title: "register new user",
+        errors: ""
     })
 });
 
@@ -22,6 +23,12 @@ router.get('/login', function (req, res, next) {
         title: "login exist user",
         message: ""
     })
+});
+
+router.get('/logout', function (req, res) {
+    req.logout();
+    req.flash('success', 'you have logged out');
+    res.redirect('/users/login');
 });
 
 router.post('/register', function (req, res, next) {
